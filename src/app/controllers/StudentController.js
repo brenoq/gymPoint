@@ -20,7 +20,26 @@ class StudentController {
   }
 
   async update(req, res) {
-    return res.json({ ok: true });
+    const { email } = req.body;
+
+    const studentExists = await Student.findOne({ where: { email } });
+
+    if (!studentExists) {
+      return res.status(400).json({ error: 'User not found!' });
+    }
+
+    const { id, name, age, weight, height } = await studentExists.update(
+      req.body
+    );
+
+    return res.json({
+      id,
+      name,
+      email,
+      age,
+      weight,
+      height,
+    });
   }
 }
 
